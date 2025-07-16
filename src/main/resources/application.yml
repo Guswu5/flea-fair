@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: flea-fair
+  datasource:
+    url: jdbc:mysql://localhost:3306/flea-fair?useSSL=false&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  port: 8111
+  servlet:
+    context-path: /flea-fair
+
+logging:
+  level:
+    root: INFO
+  file:
+    name: logs/app.log
