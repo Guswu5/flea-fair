@@ -1,13 +1,32 @@
 package com.fleafair.Mapper;
 
 import com.fleafair.Entity.User;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface UserMapper {
-    @Select("SELECT * FROM user WHERE username = #{username}")
-    User findByUsername(String username);
+    /**
+     * 用户查询
+     * @param id
+     * @return
+     */
+    @Select("SELECT * FROM user WHERE id = #{id}")
+    User findByUserId(Long id);
 
-    // 可以根据需要添加insert/update等方法
+    /**
+     * 用户注册
+     * @param user
+     */
+    @Insert("INSERT INTO user (username, password, email, phone, status) VALUES (#{username}, #{password}, #{email}, #{phone}, #{status})")
+    void insert(User user);
+
+    /**
+     * 用户更新
+     * @param user
+     */
+    @Update("UPDATE user SET username = #{username}, password = #{password}, email = #{email}, phone = #{phone}, status = #{status} WHERE id = #{id}")
+    void update(User user);
 }
