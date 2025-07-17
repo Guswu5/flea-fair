@@ -8,13 +8,14 @@ import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface UserMapper {
+
     /**
      * 用户查询
      * @param id
      * @return
      */
     @Select("SELECT * FROM user WHERE id = #{id}")
-    User findByUserId(Long id);
+    User findById(Long id);
 
     /**
      * 用户注册
@@ -29,4 +30,6 @@ public interface UserMapper {
      */
     @Update("UPDATE user SET username = #{username}, password = #{password}, email = #{email}, phone = #{phone}, status = #{status} WHERE id = #{id}")
     void update(User user);
+
+
 }

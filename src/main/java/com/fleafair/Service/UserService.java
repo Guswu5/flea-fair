@@ -1,18 +1,20 @@
 package com.fleafair.Service;
 
 import com.fleafair.Common.Result;
+import com.fleafair.DTO.LoginDTO;
 import com.fleafair.DTO.UserRegisterDTO;
 import com.fleafair.DTO.UserUpdateDTO;
 import com.fleafair.Entity.User;
 
 public interface UserService {
     /**
-     * 根据用户名查询用户
-     * @param id
+     * 用户登录
+     * @param loginDTO
      * @return
      */
-    User findByUserId(Long id);
-    boolean checkPassword(User user, String rawPassword);
+    Result<?> loginUser(LoginDTO loginDTO);
+
+
 
 
     /**

@@ -1,16 +1,23 @@
 package com.fleafair.Service.Impl;
 
 import com.fleafair.Common.Result;
+import com.fleafair.Config.JwtUtil;
+import com.fleafair.DTO.LoginDTO;
 import com.fleafair.DTO.UserRegisterDTO;
 import com.fleafair.DTO.UserUpdateDTO;
 import com.fleafair.Entity.User;
 import com.fleafair.Mapper.UserMapper;
 import com.fleafair.Service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -21,19 +28,30 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     /**
-     * 根据用户名查询用户
-     * @param id
+     * 用户登录
+     * @param loginDTO
      * @return
      */
     @Override
-    public User findByUserId(Long id) {
-        return userMapper.findByUserId(id);
+    public Result<?> loginUser(LoginDTO loginDTO) {
+        User user = userMapper.findById(loginDTO.getId());
+        if (user == null) {
+            return Result.error("账号不存在");
+        }
+        if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
+            return Result.error("密码错误");
+        }
+        // 登录成功，生成JWT
+        String token = JwtUtil.createToken(user.getId());
+        log.info("生成token：{}", token);
+        // 可以只返回token，也可以把用户基本信息和token一起返回
+        Map<String, Object> data = new HashMap<>();
+        data.put("token", token);
+        data.put("user", user);
+        return Result.success(data);
     }
 
-    @Override
-    public boolean checkPassword(User user, String password) {
-        return passwordEncoder.matches(password, user.getPassword());
-    }
+
 
     /**
      *  用户注册
@@ -64,7 +82,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<?> update(UserUpdateDTO updateDTO) {
         // 1. 查询数据库中的用户
-        User oldUser = userMapper.findByUserId(updateDTO.getId());
+        User oldUser = userMapper.findById(updateDTO.getId());
         if (oldUser == null) {
             return Result.error("用户不存在");
         }

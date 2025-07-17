@@ -1,17 +1,24 @@
 package com.fleafair.Controller;
 
 import com.fleafair.Common.Result;
+import com.fleafair.Config.JwtUtil;
+import com.fleafair.DTO.LoginDTO;
 import com.fleafair.DTO.UserRegisterDTO;
 import com.fleafair.DTO.UserUpdateDTO;
 import com.fleafair.Entity.User;
 import com.fleafair.Service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/user")
 @Slf4j
+@Tag(name = "用户接口")
 public class UserController {
 
     @Autowired
@@ -19,21 +26,14 @@ public class UserController {
 
     /**
      * 用户登录
-     * @param id
-     * @param password
+     * @param loginDTO
      * @return
      */
     @PostMapping("/login")
-    public Result<User> login(@RequestParam Long id, @RequestParam String password) {
-        User user = userService.findByUserId(id);
-        if (user == null) {
-            return Result.error("用户不存在");
-        }
-        if (!userService.checkPassword(user, password)) {
-            return Result.error("密码错误");
-        }
-        log.info("用户登录成功：{}", user);
-        return Result.success(user); // 登录成功返回用户信息
+    @Operation(summary = "用户登录")
+    public Result<?> login(@RequestBody LoginDTO loginDTO) {
+        log.info("用户登录：{}", loginDTO);
+        return userService.loginUser(loginDTO); // 登录成功返回用户信息
     }
 
     /**
@@ -42,6 +42,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/register")
+    @Operation(summary = "用户注册")
     public Result<?> register(@RequestBody UserRegisterDTO registerDTO) {
         log.info("用户注册,{}", registerDTO);
 
@@ -54,6 +55,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/update")
+    @Operation(summary = "修改用户信息")
     public Result<?> update(@RequestBody UserUpdateDTO updateDTO) {
         log.info("修改用户信息,{}", updateDTO);
         return userService.update(updateDTO);
