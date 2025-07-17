@@ -2,5 +2,5 @@
    /*
 
    # 但允许 src 目录和 pom.xml 文件
-   !/src/
+   !/src/**
    !/pom.xml
