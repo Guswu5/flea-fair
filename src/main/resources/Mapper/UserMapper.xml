@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fleafair.Mapper.UserMapper">
+
+    <!-- 
+        此处定义了一个查询方法 findBYIdOrPhone，用于根据用户ID或手机号查找用户信息。
+        resultType 指定了返回结果的类型为 com.fleafair.Entity.User。
+    -->
+    <select id="findBYIdOrPhone" resultType="com.fleafair.Entity.User">
+        SELECT * FROM user
+        WHERE id = #{id} OR phone = #{phone}
+            LIMIT 1
+    </select>
+
+    <!-- 新增：更新用户头像路径 -->
+    <update id="updateAvatarPath">
+        UPDATE user
+        SET avatar_path = #{avatarPath}
+        WHERE id = #{userId}
+    </update>
+</mapper>

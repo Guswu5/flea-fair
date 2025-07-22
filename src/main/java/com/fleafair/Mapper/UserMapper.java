@@ -31,5 +31,19 @@ public interface UserMapper {
     @Update("UPDATE user SET username = #{username}, password = #{password}, email = #{email}, phone = #{phone}, status = #{status} WHERE id = #{id}")
     void update(User user);
 
+    /**
+     * 通过手机号查询用户
+     * @param phone
+     * @return
+     */
+    @Select("SELECT * FROM user WHERE phone = #{phone}")
+    User findByPhone(String phone);
 
+    /**
+     * 通过id或手机号查询用户
+     * @param id
+     * @param phone
+     * @return
+     */
+    User findBYIdOrPhone(Long id, String phone);
 }

@@ -7,6 +7,7 @@ import com.fleafair.DTO.UserRegisterDTO;
 import com.fleafair.DTO.UserUpdateDTO;
 import com.fleafair.Entity.User;
 import com.fleafair.Service.UserService;
+import com.fleafair.VO.UserVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 @Slf4j
 @Tag(name = "用户接口")
 public class UserController {
@@ -59,5 +60,20 @@ public class UserController {
     public Result<?> update(@RequestBody UserUpdateDTO updateDTO) {
         log.info("修改用户信息,{}", updateDTO);
         return userService.update(updateDTO);
+    }
+
+    /**
+     * 获取用户信息
+     * @param token
+     * @return
+     */
+    @GetMapping("/me")
+    @Operation(summary = "获取当前用户信息")
+    public Result<?> me(@RequestHeader("Authorization") String token) {
+        log.info("获取当前用户信息,{}", token);
+
+        UserVO user = userService.findById(JwtUtil.parseToken(token));
+
+        return Result.success(user);
     }
 }

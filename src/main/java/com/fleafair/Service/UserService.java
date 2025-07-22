@@ -5,6 +5,7 @@ import com.fleafair.DTO.LoginDTO;
 import com.fleafair.DTO.UserRegisterDTO;
 import com.fleafair.DTO.UserUpdateDTO;
 import com.fleafair.Entity.User;
+import com.fleafair.VO.UserVO;
 
 public interface UserService {
     /**
@@ -13,9 +14,6 @@ public interface UserService {
      * @return
      */
     Result<?> loginUser(LoginDTO loginDTO);
-
-
-
 
     /**
      *  用户注册
@@ -29,4 +27,11 @@ public interface UserService {
      * @return
      */
     Result<?> update(UserUpdateDTO updateDTO);
+
+    /**
+     * 根据用户id查询用户
+     * @param id
+     * @return
+     */
+    UserVO findById(Long  id);
 }

@@ -1,6 +1,16 @@
-**/target/
-.idea
+# 通用
+*.log
 *.iml
 *.class
-*Test.java
-**/test/
+/target/
+/.idea/
+/.settings/
+.DS_Store
+
+# 环境配置
+application-local.yml
+application-dev.yml
+
+# 敏感文件
+**/keys.properties
+**/minio-credentials.env

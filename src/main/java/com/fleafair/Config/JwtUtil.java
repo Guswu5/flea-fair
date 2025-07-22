@@ -21,11 +21,13 @@ public class JwtUtil {
 
 
     //解析 token
-    public static Integer parseToken(String token) {
+    public static Long parseToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(SECRET_KEY) // 密钥
                 .parseClaimsJws(token)
                 .getBody();
-        return Integer.valueOf(claims.getSubject());
+        return Long.valueOf(claims.getSubject());
     }
+
+
 }

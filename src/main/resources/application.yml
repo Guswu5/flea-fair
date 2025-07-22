@@ -17,3 +17,11 @@ logging:
     root: INFO
   file:
     name: logs/app.log
+
+mybatis:
+  config-location: classpath:mybatis-config.xml
+  mapper-locations: classpath:mapper/**/*.xml
+
+file:
+  upload:
+    path: E:\code\cjwm\flea-fair\src\main\resources\uploads # 本地存储路径

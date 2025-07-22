@@ -8,6 +8,7 @@ import com.fleafair.DTO.UserUpdateDTO;
 import com.fleafair.Entity.User;
 import com.fleafair.Mapper.UserMapper;
 import com.fleafair.Service.UserService;
+import com.fleafair.VO.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +35,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Result<?> loginUser(LoginDTO loginDTO) {
-        User user = userMapper.findById(loginDTO.getId());
-        if (user == null) {
+        //通过id或者手机号查询用户
+        User user = userMapper.findBYIdOrPhone(loginDTO.getId(), loginDTO.getPhone());
+
+        if (user == null ) {
             return Result.error("账号不存在");
         }
         if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
@@ -103,5 +106,21 @@ public class UserServiceImpl implements UserService {
         // 4. 更新数据库
         userMapper.update(oldUser);
         return Result.success("修改成功");
+    }
+
+    /**
+     * 通过用户id查询用户
+     * @param id
+     * @return
+     */
+    @Override
+    public UserVO findById(Long  id) {
+        User user = userMapper.findById(id);
+
+        //TODO: 获取用户头像
+        return UserVO.builder()
+                .username(user.getUsername())
+                .avatar("http://your-domain.com/default-avatar.jpg")
+                .build();
     }
 }
