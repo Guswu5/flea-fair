@@ -14,3 +14,6 @@ application-dev.yml
 # 敏感文件
 **/keys.properties
 **/minio-credentials.env
+
+# 在 .gitignore 中添加
+src/main/java/com/fleafair/Config/secrets.properties
