@@ -1,4 +1,4 @@
-package com.fleafair.Common;
+package com.fleafair.Common.Enum;
 
 //import com.baomidou.mybatisplus.annotation.EnumValue;
 import lombok.Getter;

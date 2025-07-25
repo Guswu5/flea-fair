@@ -41,9 +41,9 @@ public interface UserMapper {
 
     /**
      * 通过id或手机号查询用户
-     * @param id
+     * @param userId
      * @param phone
      * @return
      */
-    User findBYIdOrPhone(Long id, String phone);
+    User findBYIdOrPhone(Long userId, String phone);
 }

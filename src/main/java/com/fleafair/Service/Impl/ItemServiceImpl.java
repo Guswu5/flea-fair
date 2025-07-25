@@ -5,6 +5,8 @@ import com.fleafair.DTO.ItemReleaseDTO;
 import com.fleafair.Entity.Item;
 import com.fleafair.Mapper.ItemMapper;
 import com.fleafair.Service.ItemService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.constraints.Size;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +30,14 @@ public class ItemServiceImpl implements ItemService {
 
         Item item = new Item();
         BeanUtils.copyProperties(releaseDTO, item);
-
-        //向数据库插入商品
+        // images字段转为json字符串
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            item.setImagesJson(objectMapper.writeValueAsString(releaseDTO.getImages()));
+        } catch (JsonProcessingException e) {
+            return Result.error(400, "图片URL序列化失败");
+        }
+        // 向数据库插入商品
         itemMapper.insert(item);
 
         return Result.success(Map.of("itemId", item.getId()));

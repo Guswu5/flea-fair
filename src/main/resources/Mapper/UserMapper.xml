@@ -9,7 +9,7 @@
     -->
     <select id="findBYIdOrPhone" resultType="com.fleafair.Entity.User">
         SELECT * FROM user
-        WHERE id = #{id} OR phone = #{phone}
+        WHERE userId = #{userId} OR phone = #{phone}
             LIMIT 1
     </select>
 

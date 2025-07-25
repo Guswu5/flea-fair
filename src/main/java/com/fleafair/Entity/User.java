@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class User {
     private Long id;
+    private Long userId;// ==  id +10000
     private String username; // 用户名
     private String password;
     private String email;

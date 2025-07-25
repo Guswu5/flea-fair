@@ -2,12 +2,15 @@ package com.fleafair.DTO;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 public class ItemReleaseDTO {
+
+    private String token;
+
     @NotBlank(message = "标题不能为空")
     @Size(min = 2, max = 50, message = "标题长度需在2-50字符之间")
     private String title;
@@ -24,6 +27,6 @@ public class ItemReleaseDTO {
     private String location;
 
     @NotEmpty(message = "至少上传一张图片")
-    private MultipartFile[] images;
+    private List<String> images;
 
 }

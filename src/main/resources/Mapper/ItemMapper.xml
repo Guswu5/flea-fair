@@ -4,7 +4,8 @@
 <mapper namespace="com.fleafair.Mapper.ItemMapper">
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO item (user_id, category_id, title, desc, price, images, cover_image, status, view_count, location, create_time, update_time)
-        VALUES (#{userId}, #{categoryId}, #{title}, #{desc}, #{price}, #{images}, #{coverImage}, #{status}, #{viewCount}, #{location}, #{createTime}, #{updateTime})
+        INSERT INTO item (user_id, category_id, title, `desc`, price, images, cover_image, status, view_count, location, create_time, update_time)
+        VALUES (#{userId}, #{categoryId}, #{title}, #{desc}, #{price}, #{imagesJson}, #{coverImage}, #{status}, #{viewCount}, #{location}, #{createTime}, #{updateTime})
     </insert>
 </mapper>
+

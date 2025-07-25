@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<?> loginUser(LoginDTO loginDTO) {
         //通过id或者手机号查询用户
-        User user = userMapper.findBYIdOrPhone(loginDTO.getId(), loginDTO.getPhone());
+        User user = userMapper.findBYIdOrPhone(loginDTO.getUserId(), loginDTO.getPhone());
 
         if (user == null ) {
             return Result.error("账号不存在");
@@ -108,6 +108,7 @@ public class UserServiceImpl implements UserService {
         return Result.success("修改成功");
     }
 
+    private static final String DEFAULT_AVATAR = "https://gus-image.oss-cn-guangzhou.aliyuncs.com/images/ea1761cb-4ee6-48e0-be6f-b4ad9612c668.jpg?Expires=1753421260&OSSAccessKeyId=TMP.3KoiUoXZAQEKbtHYJquM9KvxWrtBCUF1gemsj1FYdPKLBE18vSjCPrtEMZcWPAZeUfvkBbyuK5LwzgpuKEYXo8a4AkfHQp&Signature=bNgVjfY%2Bt5qlL1u2JgofWW8cEpw%3D";
     /**
      * 通过用户id查询用户
      * @param id
@@ -117,10 +118,15 @@ public class UserServiceImpl implements UserService {
     public UserVO findById(Long  id) {
         User user = userMapper.findById(id);
 
-        //TODO: 获取用户头像
+
+        //获取用户头像
+        if(user.getAvatar() == null){
+            user.setAvatar(DEFAULT_AVATAR);
+        }
+        
         return UserVO.builder()
                 .username(user.getUsername())
-                .avatar("http://your-domain.com/default-avatar.jpg")
+                .avatar(user.getAvatar())
                 .build();
     }
 }

@@ -1,6 +1,6 @@
 package com.fleafair.Handler;
 
-import com.fleafair.Common.ItemStatus;
+import com.fleafair.Common.Enum.ItemStatus;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import java.sql.CallableStatement;

@@ -1,4 +1,4 @@
-package com.fleafair.Common;
+package com.fleafair.Common.Enum;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

@@ -7,6 +7,7 @@ spring:
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+
 server:
   port: 8111
   servlet:
@@ -24,4 +25,11 @@ mybatis:
 
 file:
   upload:
-    path: E:\code\cjwm\flea-fair\src\main\resources\uploads # 本地存储路径
+    path: ${file.upload.path} # 本地存储路径
+
+aliyun:
+  oss:
+    endpoint: oss-cn-guangzhou.aliyuncs.com
+    access-key-id: ${alibaba.cloud.accessKeyId}
+    access-key-secret: ${alibaba.cloud.accessKeySecret}
+    bucket-name: gus-image
