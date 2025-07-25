@@ -79,6 +79,14 @@
 			<scope>test</scope>
 		</dependency>
 
+<!--		Java Servlet API-->
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>6.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<!--jdk8依赖-->
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
@@ -112,6 +120,8 @@
 			<version>0.9.1</version>
 		</dependency>
 	</dependencies>
+
+
 
 	<build>
 		<plugins>

@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 public class ItemReleaseDTO {
 
-    private String token;
+//    private String token;
 
     @NotBlank(message = "标题不能为空")
     @Size(min = 2, max = 50, message = "标题长度需在2-50字符之间")

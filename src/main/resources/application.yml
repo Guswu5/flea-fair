@@ -7,7 +7,6 @@ spring:
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-
 server:
   port: 8111
   servlet:
@@ -20,12 +19,17 @@ logging:
     name: logs/app.log
 
 mybatis:
-  config-location: classpath:mybatis-config.xml
+  configuration:
+    map-underscore-to-camel-case: true  # 驼峰转换
+    lazy-loading-enabled: false         # 可选：延迟加载
+    aggressive-lazy-loading: false      # 可选：激进延迟加载
+  type-aliases-package: com.fleafair.Entity  # 替代<typeAliases>
   mapper-locations: classpath:mapper/**/*.xml
+  # 注意：移除了 config-location
 
 file:
   upload:
-    path: ${file.upload.path} # 本地存储路径
+    path: ${file.upload.path}
 
 aliyun:
   oss:

@@ -11,5 +11,5 @@ public interface ItemService {
      * @param releaseDTO
      * @return
      */
-    Result<?> Release(ItemReleaseDTO releaseDTO);
+    Result<?> Release(ItemReleaseDTO releaseDTO, Long userId);
 }

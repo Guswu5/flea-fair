@@ -26,10 +26,19 @@ public class ItemServiceImpl implements ItemService {
      * @return
      */
     @Override
-    public Result<?> Release(ItemReleaseDTO releaseDTO) {
+    public Result<?> Release(ItemReleaseDTO releaseDTO , Long userId) {
 
         Item item = new Item();
-        BeanUtils.copyProperties(releaseDTO, item);
+
+        BeanUtils.copyProperties(releaseDTO, item);// 将releaseDTO中的属性复制到item中
+        item.setUserId(userId);
+        item.setCoverImage(releaseDTO.getImages().get(0));
+        item.setStatus(1);
+
+        //设置创建和修改时间
+        item.setCreateTime(java.time.LocalDateTime.now());
+        item.setUpdateTime(java.time.LocalDateTime.now());
+
         // images字段转为json字符串
         ObjectMapper objectMapper = new ObjectMapper();
         try {
