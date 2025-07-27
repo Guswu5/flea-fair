@@ -1,11 +1,21 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fleafair.Mapper.ItemMapper">
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO item (user_id, category_id, title, `desc`, price, images, cover_image, status, view_count, location, create_time, update_time)
         VALUES (#{userId}, #{categoryId}, #{title}, #{desc}, #{price}, #{imagesJson}, #{coverImage}, #{status}, #{viewCount}, #{location}, #{createTime}, #{updateTime})
     </insert>
+
+    <select id="searchItems" resultType="com.fleafair.Entity.Item">
+        SELECT id, category_id, title, price
+        FROM item
+        WHERE status = 1
+        <if test="keyword != null and keyword != ''">
+            AND (title LIKE CONCAT('%', #{keyword}, '%') OR `desc` LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        ORDER BY create_time DESC
+        LIMIT #{offset}, #{size}
+    </select>
 </mapper>
 

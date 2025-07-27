@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Result<?> loginUser(LoginDTO loginDTO) {
-        //通过id或者手机号查询用户
+        //通过用户id或者手机号查询用户
         User user = userMapper.findBYIdOrPhone(loginDTO.getUserId(), loginDTO.getPhone());
 
         if (user == null ) {
@@ -44,9 +44,11 @@ public class UserServiceImpl implements UserService {
         if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
             return Result.error("密码错误");
         }
+
         // 登录成功，生成JWT
-        String token = JwtUtil.createToken(user.getId());
+        String token = JwtUtil.createToken(user.getUserId());
         log.info("生成token：{}", token);
+
         // 可以只返回token，也可以把用户基本信息和token一起返回
         Map<String, Object> data = new HashMap<>();
         data.put("token", token);

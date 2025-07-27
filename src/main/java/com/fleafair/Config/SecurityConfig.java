@@ -28,7 +28,8 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "user/**",
-                                "/upload/**"
+                                "/upload/**",
+                                "/item/search"
                         ).permitAll()
                         .anyRequest().authenticated()
                 );

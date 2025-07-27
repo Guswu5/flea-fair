@@ -7,11 +7,13 @@ import com.fleafair.Mapper.ItemMapper;
 import com.fleafair.Service.ItemService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.validation.constraints.Size;
+import com.fleafair.VO.SearchVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.Map;
 
 @Service
@@ -31,7 +33,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = new Item();
 
         BeanUtils.copyProperties(releaseDTO, item);// 将releaseDTO中的属性复制到item中
-        item.setUserId(userId);
+        item.setUserId(userId + 10000);
         item.setCoverImage(releaseDTO.getImages().get(0));
         item.setStatus(1);
 
@@ -50,6 +52,35 @@ public class ItemServiceImpl implements ItemService {
         itemMapper.insert(item);
 
         return Result.success(Map.of("itemId", item.getId()));
+    }
+
+    /**
+     * 搜索商品
+     *
+     * @param keyword
+     * @param page
+     * @param size
+     * @return
+     */
+    @Override
+    public Result<?> SearchItems(String keyword, int page, int size) {
+        // 计算偏移量
+        int offset = (page - 1) * size;
+
+        // 查询商品
+        List<Item> items = itemMapper.searchItems(keyword, offset, size);
+
+        //获取items里面的第一个categoryId
+        int total = items.get(0).getCategoryId();
+
+
+        // 构造返回结果
+        Map<String, Object> result = Map.of(
+            "list", items,
+            "total", total
+        );
+
+        return Result.success(result);
     }
 
 }

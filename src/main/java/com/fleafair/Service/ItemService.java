@@ -2,7 +2,6 @@ package com.fleafair.Service;
 
 import com.fleafair.Common.Result;
 import com.fleafair.DTO.ItemReleaseDTO;
-import org.springframework.web.bind.annotation.RequestBody;
 
 public interface ItemService {
 
@@ -12,4 +11,13 @@ public interface ItemService {
      * @return
      */
     Result<?> Release(ItemReleaseDTO releaseDTO, Long userId);
+
+    /**
+     * 搜索商品
+     * @param keyword
+     * @param page
+     * @param size
+     * @return
+     */
+    Result<?> SearchItems(String keyword, int page, int size);
 }
