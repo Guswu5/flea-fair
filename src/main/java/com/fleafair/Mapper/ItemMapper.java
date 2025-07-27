@@ -3,6 +3,7 @@ package com.fleafair.Mapper;
 import com.fleafair.Entity.Item;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -27,4 +28,11 @@ public interface ItemMapper {
                            @Param("size") int size);
 
 
+    /**
+     * 根据id查询商品
+     * @param id
+     * @return
+     */
+    @Select("select * from item where id = #{id}")
+    Item getById(Long id);
 }

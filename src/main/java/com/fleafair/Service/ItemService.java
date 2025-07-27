@@ -20,4 +20,11 @@ public interface ItemService {
      * @return
      */
     Result<?> SearchItems(String keyword, int page, int size);
+
+    /**
+     * 根据id获取商品详情
+     * @param id
+     * @return
+     */
+    Result<?> getById(Long id);
 }

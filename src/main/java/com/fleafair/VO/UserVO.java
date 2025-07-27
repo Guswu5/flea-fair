@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchConnect
 @Builder
 @Data
 public class UserVO {
+    private Long userId;
     private String username;
     //返回头像url,默认返回默认头像
     private String avatar;

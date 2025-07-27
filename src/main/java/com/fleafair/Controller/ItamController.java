@@ -2,14 +2,12 @@ package com.fleafair.Controller;
 
 import com.fleafair.Common.Result;
 import com.fleafair.DTO.ItemReleaseDTO;
-import com.fleafair.Entity.Item;
 import com.fleafair.Service.ItemService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,6 +26,7 @@ public class ItamController {
      * @return
      */
     @PostMapping("/release")
+    @Operation(summary = "发布商品")
     public Result<?> Release(@RequestBody ItemReleaseDTO releaseDTO,
                             @AuthenticationPrincipal Long userId){
         log.info("发布商品：{}", releaseDTO);
@@ -41,9 +40,21 @@ public class ItamController {
      * @return
      */
     @GetMapping("/search")
+    @Operation(summary = "搜索商品")
     public Result<?> Search(String keyword , int page, int size){
         log.info("搜索商品：{}", keyword);
         return itemService.SearchItems(keyword, page, size);
     }
 
+    /**
+     * 获取商品详情
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    @Operation(summary = "获取商品详情")
+    public Result<?> GetById(@PathVariable Long id){
+        log.info("获取商品：{}", id);
+        return itemService.getById(id);
+    }
 }
