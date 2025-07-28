@@ -1,6 +1,8 @@
 package com.fleafair.Service.Impl;
 
+import com.fleafair.Common.Result;
 import com.fleafair.DTO.OrderCreateDTO;
+import com.fleafair.DTO.OrderUpdateDTO;
 import com.fleafair.Entity.Order;
 import com.fleafair.Mapper.ItemMapper;
 import com.fleafair.Mapper.OrderMapper;
@@ -32,5 +34,19 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.insert(order);
         Long orderId = order.getId();
         return orderId;
+    }
+
+    @Override
+    public boolean PayOrder(String paymentMethod, Long id) {
+        if (paymentMethod == null){
+            return false;
+        }
+        // 更新订单状态
+        OrderUpdateDTO orderUpdateDTO = new OrderUpdateDTO();
+        orderUpdateDTO.setId(id);
+        orderUpdateDTO.setStatus(Order.PAID);
+        orderUpdateDTO.setUpdateTime(LocalDateTime.now());
+        orderMapper.update(orderUpdateDTO);
+        return true;
     }
 }

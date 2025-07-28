@@ -1,17 +1,19 @@
 package com.fleafair.Entity;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
+//@Builder
 public class Order {
     private Long id;              // 订单ID，自增主键
     private Long itemId;          // 商品ID
 
     //TODO: 订单表添加用户地址字段
     private Long addressId;       // 用户地址
-    private Integer status = 0;   // 订单状态，默认0（待支付）
+    private Integer status;   // 订单状态，默认0（待支付）
     private LocalDateTime createTime;      // 订单创建时间
     private LocalDateTime updateTime;      // 订单更新时间
 

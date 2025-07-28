@@ -9,4 +9,11 @@ public interface OrderService {
      * @return
      */
     Long CreateOrder(OrderCreateDTO createDTO);
+
+    /**
+     * 支付订单
+     * @param paymentMethod
+     * @param id
+     */
+    boolean PayOrder(String paymentMethod, Long id);
 }
