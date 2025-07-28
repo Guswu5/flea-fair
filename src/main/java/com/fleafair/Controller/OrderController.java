@@ -51,4 +51,15 @@ public class OrderController {
         );
         return Result.success(result);
     }
+
+    /**
+     * 取消订单
+     * @param id
+     * @return
+     */
+    @PutMapping("/{id}/cancel")
+    public Result<?> CancelOrder(@PathVariable Long id){
+        String result = orderService.CancelOrder(id);
+        return Result.success(result);
+    }
 }

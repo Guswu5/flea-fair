@@ -7,6 +7,7 @@ import com.fleafair.Entity.Order;
 import com.fleafair.Mapper.ItemMapper;
 import com.fleafair.Mapper.OrderMapper;
 import com.fleafair.Service.OrderService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
+@Slf4j
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
@@ -46,7 +48,23 @@ public class OrderServiceImpl implements OrderService {
         orderUpdateDTO.setId(id);
         orderUpdateDTO.setStatus(Order.PAID);
         orderUpdateDTO.setUpdateTime(LocalDateTime.now());
+
         orderMapper.update(orderUpdateDTO);
         return true;
+    }
+
+    @Override
+    public String CancelOrder(Long id) {
+        OrderUpdateDTO orderCancel = new OrderUpdateDTO();
+
+        // 更新订单状态
+        orderCancel.setId(id);
+        orderCancel.setStatus(Order.CANCELLED);
+        orderCancel.setUpdateTime(LocalDateTime.now());
+
+        orderMapper.update(orderCancel);
+
+        log.info("取消订单：{}", id);
+        return "订单已取消";
     }
 }

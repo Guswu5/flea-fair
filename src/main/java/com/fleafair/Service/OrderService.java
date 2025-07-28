@@ -16,4 +16,11 @@ public interface OrderService {
      * @param id
      */
     boolean PayOrder(String paymentMethod, Long id);
+
+    /**
+     * 取消订单
+     * @param id
+     * @return
+     */
+    String CancelOrder(Long id);
 }
