@@ -29,7 +29,8 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "user/**",
                                 "/upload/**",
-                                "/item/**"
+                                "/item/**",
+                                "/order**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 );
