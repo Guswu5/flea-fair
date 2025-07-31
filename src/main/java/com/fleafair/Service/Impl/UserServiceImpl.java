@@ -113,12 +113,12 @@ public class UserServiceImpl implements UserService {
     private static final String DEFAULT_AVATAR = "https://gus-image.oss-cn-guangzhou.aliyuncs.com/images/ea1761cb-4ee6-48e0-be6f-b4ad9612c668.jpg?Expires=1753421260&OSSAccessKeyId=TMP.3KoiUoXZAQEKbtHYJquM9KvxWrtBCUF1gemsj1FYdPKLBE18vSjCPrtEMZcWPAZeUfvkBbyuK5LwzgpuKEYXo8a4AkfHQp&Signature=bNgVjfY%2Bt5qlL1u2JgofWW8cEpw%3D";
     /**
      * 通过用户id查询用户
-     * @param id
+     * @param userId
      * @return
      */
     @Override
-    public UserVO findById(Long  id) {
-        User user = userMapper.findById(id);
+    public UserVO findById(Long userId) {
+        User user = userMapper.findById(userId);
 
 
         //获取用户头像
@@ -127,6 +127,7 @@ public class UserServiceImpl implements UserService {
         }
         
         return UserVO.builder()
+                .userId(user.getUserId())
                 .username(user.getUsername())
                 .avatar(user.getAvatar())
                 .build();

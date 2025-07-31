@@ -30,8 +30,8 @@ public interface UserService {
 
     /**
      * 根据用户id查询用户
-     * @param id
+     * @param userId
      * @return
      */
-    UserVO findById(Long  id);
+    UserVO findById(Long userId);
 }

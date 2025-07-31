@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -64,16 +65,16 @@ public class UserController {
 
     /**
      * 获取用户信息
-     * @param token
+     * @param id
      * @return
      */
     @GetMapping("/me")
     @Operation(summary = "获取当前用户信息")
-    public Result<?> me(@RequestHeader("Authorization") String token) {
-        log.info("获取当前用户信息,{}", token);
+    public Result<?> me(@AuthenticationPrincipal Long userid) {
 
-        UserVO user = userService.findById(JwtUtil.parseToken(token));
+        UserVO user = userService.findById(userid);
 
+        log.info("用户信息：{}", user);
         return Result.success(user);
     }
 }

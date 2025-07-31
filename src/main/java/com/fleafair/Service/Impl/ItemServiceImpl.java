@@ -107,7 +107,7 @@ public class ItemServiceImpl implements ItemService {
         List<Item> items = itemMapper.searchItems(keyword, offset, size);
 
         // 获取总数
-        int total = itemMapper.countItems(keyword);
+        int total = items.get(0).getCategoryId();
 
         // 将结果存入缓存，设置过期时间为10分钟
         redisTemplate.opsForValue().set(cacheKey, items, 10, TimeUnit.MINUTES);

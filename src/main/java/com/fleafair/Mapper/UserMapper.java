@@ -14,7 +14,7 @@ public interface UserMapper {
      * @param id
      * @return
      */
-    @Select("SELECT * FROM user WHERE id = #{id}")
+    @Select("SELECT * FROM user WHERE userId = #{userId}")
     User findById(Long id);
 
     /**

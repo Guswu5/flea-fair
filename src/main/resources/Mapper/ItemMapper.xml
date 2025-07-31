@@ -8,7 +8,7 @@
     </insert>
 
     <select id="searchItems" resultType="com.fleafair.Entity.Item">
-        SELECT id, category_id, title, price
+        SELECT id, category_id, title, price, cover_image, images, location
         FROM item
         WHERE status = 1
         <if test="keyword != null and keyword != ''">
