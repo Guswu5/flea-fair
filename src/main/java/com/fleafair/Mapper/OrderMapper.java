@@ -29,4 +29,11 @@ public interface OrderMapper {
     @Update("update orders set status = #{status}, update_time = #{updateTime} where id = #{id}")
     void update(OrderUpdateDTO orderUpdateDTO);
 
+    /**
+     * 根据id查询订单
+     * @param id
+     * @return
+     */
+    @Select("select * from orders where id = #{id}")
+    Order getById(Long id);
 }

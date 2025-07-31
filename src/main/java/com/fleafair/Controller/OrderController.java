@@ -62,4 +62,14 @@ public class OrderController {
         String result = orderService.CancelOrder(id);
         return Result.success(result);
     }
+
+    /**
+     * 查询订单
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public Result<?> GetOrder(@PathVariable Long id){
+        return orderService.GetOrder(id);
+    }
 }

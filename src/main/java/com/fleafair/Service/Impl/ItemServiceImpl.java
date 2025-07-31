@@ -15,9 +15,11 @@ import com.fleafair.VO.SearchVO;
 import com.fleafair.VO.UserVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.Map;
 
@@ -28,6 +30,9 @@ public class ItemServiceImpl implements ItemService {
     private ItemMapper itemMapper;
     @Autowired
     private UserMapper userMapper;
+    
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 发布商品
@@ -57,6 +62,9 @@ public class ItemServiceImpl implements ItemService {
         }
         // 向数据库插入商品
         itemMapper.insert(item);
+        
+        // 清除商品搜索缓存
+        redisTemplate.delete("items:search:*");
 
         return Result.success(Map.of("itemId", item.getId()));
     }
@@ -71,15 +79,39 @@ public class ItemServiceImpl implements ItemService {
      */
     @Override
     public Result<?> SearchItems(String keyword, int page, int size) {
+        // 构建缓存key
+        String cacheKey = "items:search:" + keyword + ":page:" + page + ":size:" + size;
+        
+        // 尝试从缓存中获取
+        List<Item> cachedItems = (List<Item>) redisTemplate.opsForValue().get(cacheKey);
+        if (cachedItems != null) {
+            // 从缓存获取总数
+            Integer total = (Integer) redisTemplate.opsForValue().get(cacheKey + ":total");
+            if (total == null) {
+                total = 0;
+            }
+            
+            // 构造返回结果
+            Map<String, Object> result = Map.of(
+                "list", cachedItems,
+                "total", total
+            );
+            
+            return Result.success(result);
+        }
+        
         // 计算偏移量
         int offset = (page - 1) * size;
 
         // 查询商品
         List<Item> items = itemMapper.searchItems(keyword, offset, size);
 
-        //获取items里面的第一个categoryId
-        int total = items.get(0).getCategoryId();
+        // 获取总数
+        int total = itemMapper.countItems(keyword);
 
+        // 将结果存入缓存，设置过期时间为10分钟
+        redisTemplate.opsForValue().set(cacheKey, items, 10, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(cacheKey + ":total", total, 10, TimeUnit.MINUTES);
 
         // 构造返回结果
         Map<String, Object> result = Map.of(
@@ -97,6 +129,15 @@ public class ItemServiceImpl implements ItemService {
      */
     @Override
     public Result<?> getById(Long id) {
+        // 构建缓存key
+        String cacheKey = "item:id:" + id;
+        
+        // 尝试从缓存中获取
+        ItemVO cachedItemVO = (ItemVO) redisTemplate.opsForValue().get(cacheKey);
+        if (cachedItemVO != null) {
+            return Result.success(cachedItemVO);
+        }
+        
         // 从数据库获取商品详情
         Item item = itemMapper.getById(id);
 
@@ -136,6 +177,9 @@ public class ItemServiceImpl implements ItemService {
                 .images(item.getImages())
                 .seller(sellerVO)
                 .build();
+                
+        // 将结果存入缓存，设置过期时间为30分钟
+        redisTemplate.opsForValue().set(cacheKey, itemVO, 30, TimeUnit.MINUTES);
 
         return Result.success(itemVO);
     }

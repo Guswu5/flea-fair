@@ -35,4 +35,12 @@ public interface ItemMapper {
      */
     @Select("select * from item where id = #{id}")
     Item getById(Long id);
+
+    /**
+     * 统计商品数量
+     * @param keyword
+     * @return
+     */
+    @Select("select count(*) from item where name like concat('%', #{keyword}, '%')")
+    int countItems(String keyword);
 }

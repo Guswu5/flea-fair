@@ -1,5 +1,6 @@
 package com.fleafair.Service;
 
+import com.fleafair.Common.Result;
 import com.fleafair.DTO.OrderCreateDTO;
 
 public interface OrderService {
@@ -23,4 +24,11 @@ public interface OrderService {
      * @return
      */
     String CancelOrder(Long id);
+
+    /**
+     * 获取订单
+     * @param id
+     * @return
+     */
+    Result<?> GetOrder(Long id);
 }

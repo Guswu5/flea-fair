@@ -1,11 +1,14 @@
 package com.fleafair.VO;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchConnectionDetails;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserVO {
     private Long userId;
     private String username;
