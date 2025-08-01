@@ -7,6 +7,10 @@
         <result property="images" column="images" typeHandler="com.fleafair.Handler.StringListTypeHandler"/>
     </resultMap>
 
+    <select id="getById" resultMap="ItemResultMap">
+        select * from item where id = #{id}
+    </select>
+
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO item (user_id, category_id, title, details, price, images, status, view_count, location, create_time, update_time)
         VALUES (#{userId}, #{categoryId}, #{title}, #{details}, #{price}, #{images, typeHandler=com.fleafair.Handler.StringListTypeHandler}, #{status, typeHandler=com.fleafair.Handler.ItemStatusHandler}, #{viewCount}, #{location}, #{createTime}, #{updateTime})

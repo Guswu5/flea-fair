@@ -26,7 +26,12 @@ public class ItemStatusHandler extends BaseTypeHandler<ItemStatus> {
         if (rs.wasNull()) {
             return null;
         }
-        return ItemStatus.fromCode(code);
+        try {
+            return ItemStatus.fromCode(code);
+        } catch (IllegalArgumentException e) {
+            // 如果没有匹配的枚举，返回默认值（在售状态）
+            return ItemStatus.ON_SALE;
+        }
     }
 
     @Override
@@ -35,7 +40,12 @@ public class ItemStatusHandler extends BaseTypeHandler<ItemStatus> {
         if (rs.wasNull()) {
             return null;
         }
-        return ItemStatus.fromCode(code);
+        try {
+            return ItemStatus.fromCode(code);
+        } catch (IllegalArgumentException e) {
+            // 如果没有匹配的枚举，返回默认值（在售状态）
+            return ItemStatus.ON_SALE;
+        }
     }
 
     @Override
@@ -44,6 +54,11 @@ public class ItemStatusHandler extends BaseTypeHandler<ItemStatus> {
         if (cs.wasNull()) {
             return null;
         }
-        return ItemStatus.fromCode(code);
+        try {
+            return ItemStatus.fromCode(code);
+        } catch (IllegalArgumentException e) {
+            // 如果没有匹配的枚举，返回默认值（在售状态）
+            return ItemStatus.ON_SALE;
+        }
     }
 }

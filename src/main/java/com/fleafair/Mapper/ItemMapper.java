@@ -33,7 +33,6 @@ public interface ItemMapper {
      * @param id
      * @return
      */
-    @Select("select * from item where id = #{id}")
     Item getById(Long id);
 
     /**
