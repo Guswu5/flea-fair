@@ -57,4 +57,15 @@ public class ItamController {
         log.info("获取商品：{}", id);
         return itemService.getById(id);
     }
+
+    /**
+     * 获取默认商品列表
+     * @return
+     */
+    @GetMapping
+    @Operation(summary = "默认商品列表")
+    public Result<?> DefaultItems(){
+        log.info("获取默认商品列表");
+        return itemService.GetDefaultItems();
+    }
 }

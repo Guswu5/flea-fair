@@ -30,7 +30,7 @@ public class SecurityConfig {
                                 "user/**",
                                 "/upload/**",
                                 "/item/**",
-                                "/order**"
+                                "/order/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 );

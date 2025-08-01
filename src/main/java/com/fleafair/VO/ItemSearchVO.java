@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class SearchVO {
+public class ItemSearchVO {
     private List<ItemVO> list;
     private int total;
     

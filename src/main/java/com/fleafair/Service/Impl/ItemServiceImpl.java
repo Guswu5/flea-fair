@@ -1,5 +1,6 @@
 package com.fleafair.Service.Impl;
 
+import com.fleafair.Common.Enum.ItemStatus;
 import com.fleafair.Common.Result;
 import com.fleafair.DTO.ItemReleaseDTO;
 import com.fleafair.Entity.Item;
@@ -7,11 +8,7 @@ import com.fleafair.Entity.User;
 import com.fleafair.Mapper.ItemMapper;
 import com.fleafair.Mapper.UserMapper;
 import com.fleafair.Service.ItemService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fleafair.Service.UserService;
 import com.fleafair.VO.ItemVO;
-import com.fleafair.VO.SearchVO;
 import com.fleafair.VO.UserVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import java.util.Map;
 
 @Service
@@ -46,20 +42,12 @@ public class ItemServiceImpl implements ItemService {
 
         BeanUtils.copyProperties(releaseDTO, item);// 将releaseDTO中的属性复制到item中
         item.setUserId(userId + 10000);
-        item.setCoverImage(releaseDTO.getImages().get(0));
-        item.setStatus(1);
+        item.setStatus(ItemStatus.ON_SALE);  // 使用枚举值
 
         //设置创建和修改时间
         item.setCreateTime(java.time.LocalDateTime.now());
         item.setUpdateTime(java.time.LocalDateTime.now());
 
-        // images字段转为json字符串
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            item.setImagesJson(objectMapper.writeValueAsString(releaseDTO.getImages()));
-        } catch (JsonProcessingException e) {
-            return Result.error(400, "图片URL序列化失败");
-        }
         // 向数据库插入商品
         itemMapper.insert(item);
         
@@ -146,17 +134,6 @@ public class ItemServiceImpl implements ItemService {
             return Result.error(404, "商品不存在");
         }
 
-        // 解析图片JSON
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            if (item.getImagesJson() != null && !item.getImagesJson().isEmpty()) {
-                List<String> images = objectMapper.readValue(item.getImagesJson(), List.class);
-                item.setImages(images);
-            }
-        } catch (JsonProcessingException e) {
-            return Result.error(500, "图片数据解析失败");
-        }
-
         // 获取卖家信息
         User seller = userMapper.findById(item.getUserId() - 10000); // 转换为原始用户ID
         UserVO sellerVO = null;
@@ -172,7 +149,7 @@ public class ItemServiceImpl implements ItemService {
         ItemVO itemVO = ItemVO.builder()
                 .id(item.getId())
                 .title(item.getTitle())
-                .desc(item.getDesc())
+                .details(item.getDetails())  // 原为getDesc()
                 .price(item.getPrice())
                 .images(item.getImages())
                 .seller(sellerVO)
@@ -182,5 +159,15 @@ public class ItemServiceImpl implements ItemService {
         redisTemplate.opsForValue().set(cacheKey, itemVO, 30, TimeUnit.MINUTES);
 
         return Result.success(itemVO);
+    }
+
+    /**
+     * 获取默认商品
+     * @return
+     */
+    @Override
+    public Result<?> GetDefaultItems() {
+        List<Item> items = itemMapper.getDefaultItems();
+        return Result.success(items);
     }
 }

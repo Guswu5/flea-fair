@@ -15,7 +15,7 @@ import java.util.List;
 public class ItemVO {
     private Long id;
     private String title;
-    private String desc;
+    private String details;
     private BigDecimal price;
     private transient List<String> images;
 

@@ -27,4 +27,10 @@ public interface ItemService {
      * @return
      */
     Result<?> getById(Long id);
+
+    /**
+     * 获取默认商品
+     * @return
+     */
+    Result<?> GetDefaultItems();
 }

@@ -15,11 +15,11 @@ public enum ItemStatus {
     UNDER_REVIEW(3, "审核中");
 
     private final int code;
-    private final String desc;
+    private final String details;  // 原为desc
 
-    ItemStatus(int code, String desc) {
+    ItemStatus(int code, String details) {  // 原为desc
         this.code = code;
-        this.desc = desc;
+        this.details = details;  // 原为desc
     }
 
     // 用于MyBatis从数据库读取时转换
@@ -39,8 +39,8 @@ public enum ItemStatus {
 
     // 返回给前端的描述
     @JsonValue
-    public String getDesc() {
-        return desc;
+    public String getDetails() {  // 原为getDesc()
+        return details;  // 原为desc
     }
 
     // 前端传参时反序列化

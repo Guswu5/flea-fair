@@ -43,4 +43,10 @@ public interface ItemMapper {
      */
     @Select("select count(*) from item where name like concat('%', #{keyword}, '%')")
     int countItems(String keyword);
+
+    /**
+     * 获取默认商品
+     * @return
+     */
+    List<Item> getDefaultItems();
 }

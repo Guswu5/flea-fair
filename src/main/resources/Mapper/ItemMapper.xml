@@ -2,20 +2,36 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fleafair.Mapper.ItemMapper">
 
+    <resultMap id="ItemResultMap" type="com.fleafair.Entity.Item">
+        <result property="status" column="status" typeHandler="com.fleafair.Handler.ItemStatusHandler"/>
+        <result property="images" column="images" typeHandler="com.fleafair.Handler.StringListTypeHandler"/>
+    </resultMap>
+
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO item (user_id, category_id, title, `desc`, price, images, cover_image, status, view_count, location, create_time, update_time)
-        VALUES (#{userId}, #{categoryId}, #{title}, #{desc}, #{price}, #{imagesJson}, #{coverImage}, #{status}, #{viewCount}, #{location}, #{createTime}, #{updateTime})
+        INSERT INTO item (user_id, category_id, title, details, price, images, status, view_count, location, create_time, update_time)
+        VALUES (#{userId}, #{categoryId}, #{title}, #{details}, #{price}, #{images, typeHandler=com.fleafair.Handler.StringListTypeHandler}, #{status, typeHandler=com.fleafair.Handler.ItemStatusHandler}, #{viewCount}, #{location}, #{createTime}, #{updateTime})
     </insert>
 
-    <select id="searchItems" resultType="com.fleafair.Entity.Item">
-        SELECT id, category_id, title, price, cover_image, images, location
+    <select id="searchItems" resultMap="ItemResultMap">
+        SELECT id, category_id, title, price, images, location, status, details
         FROM item
         WHERE status = 1
         <if test="keyword != null and keyword != ''">
-            AND (title LIKE CONCAT('%', #{keyword}, '%') OR `desc` LIKE CONCAT('%', #{keyword}, '%'))
+            AND (title LIKE CONCAT('%', #{keyword}, '%') OR details LIKE CONCAT('%', #{keyword}, '%'))
         </if>
         ORDER BY create_time DESC
         LIMIT #{offset}, #{size}
     </select>
-</mapper>
 
+    <select id="getDefaultItems" resultMap="ItemResultMap">
+        SELECT *
+        FROM (
+                 SELECT *
+                 FROM item
+                 ORDER BY update_time DESC
+                     LIMIT 1000  -- 先按时间取最近的 1000 条
+             ) AS recent_items
+        ORDER BY RAND()
+            LIMIT 100      -- 再随机取 100 条
+    </select>
+</mapper>
