@@ -8,7 +8,8 @@
     </resultMap>
 
     <select id="getById" resultMap="ItemResultMap">
-        select * from item where id = #{id}
+        select id, user_id, category_id, title, details, price, images, status, view_count, location, create_time, update_time 
+        from item where id = #{id}
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
@@ -17,7 +18,7 @@
     </insert>
 
     <select id="searchItems" resultMap="ItemResultMap">
-        SELECT id, category_id, title, price, images, location, status, details
+        SELECT id, user_id, category_id, title, price, images, location, status, details
         FROM item
         WHERE status = 1
         <if test="keyword != null and keyword != ''">

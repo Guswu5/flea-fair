@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fleafair.Mapper.MessageMapper">
+
+    <resultMap id="MessageResultMap" type="com.fleafair.Entity.Message">
+        <id column="id" property="id"/>
+        <result column="from_user_id" property="fromUserId"/>
+        <result column="to_user_id" property="toUserId"/>
+        <result column="content" property="content"/>
+        <result column="message_type" property="messageType"/>
+        <result column="image_url" property="imageUrl"/>
+        <result column="item_id" property="itemId"/>
+        <result column="order_info" property="orderInfo"/>
+        <result column="is_read" property="isRead"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        
+        <!-- 关联查询 -->
+        <association property="fromUser" javaType="com.fleafair.Entity.User">
+            <id column="fu_id" property="id"/>
+            <result column="fu_user_id" property="userId"/>
+            <result column="fu_username" property="username"/>
+            <result column="fu_avatar" property="avatar"/>
+        </association>
+        
+        <association property="toUser" javaType="com.fleafair.Entity.User">
+            <id column="tu_id" property="id"/>
+            <result column="tu_user_id" property="userId"/>
+            <result column="tu_username" property="username"/>
+            <result column="tu_avatar" property="avatar"/>
+        </association>
+        
+        <association property="item" javaType="com.fleafair.Entity.Item">
+            <id column="i_id" property="id"/>
+            <result column="i_title" property="title"/>
+            <result column="i_price" property="price"/>
+            <result column="i_images" property="images" typeHandler="com.fleafair.Handler.StringListTypeHandler"/>
+        </association>
+    </resultMap>
+
+    <!-- 插入消息 -->
+    <insert id="insertMessage" parameterType="com.fleafair.Entity.Message" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO message (
+            from_user_id, to_user_id, content, message_type, 
+            image_url, item_id, order_info, is_read, create_time, update_time
+        ) VALUES (
+            #{fromUserId}, #{toUserId}, #{content}, #{messageType}, 
+            #{imageUrl}, #{itemId}, #{orderInfo}, #{isRead}, #{createTime}, #{updateTime}
+        )
+    </insert>
+
+    <!-- 根据会话获取消息列表 -->
+    <select id="getMessagesBySession" resultMap="MessageResultMap">
+        SELECT 
+            m.*,
+            fu.id as fu_id, fu.user_id as fu_user_id, fu.username as fu_username, fu.avatar as fu_avatar,
+            tu.id as tu_id, tu.user_id as tu_user_id, tu.username as tu_username, tu.avatar as tu_avatar,
+            i.id as i_id, i.title as i_title, i.price as i_price, i.images as i_images
+        FROM message m
+        LEFT JOIN user fu ON m.from_user_id = fu.user_id
+        LEFT JOIN user tu ON m.to_user_id = tu.user_id
+        LEFT JOIN item i ON m.item_id = i.id
+        WHERE (m.from_user_id = #{user1Id} AND m.to_user_id = #{user2Id})
+           OR (m.from_user_id = #{user2Id} AND m.to_user_id = #{user1Id})
+        ORDER BY m.create_time DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 获取最新消息 -->
+    <select id="getLastMessage" resultMap="MessageResultMap">
+        SELECT 
+            m.*,
+            fu.id as fu_id, fu.user_id as fu_user_id, fu.username as fu_username, fu.avatar as fu_avatar,
+            tu.id as tu_id, tu.user_id as tu_user_id, tu.username as tu_username, tu.avatar as tu_avatar
+        FROM message m
+        LEFT JOIN user fu ON m.from_user_id = fu.user_id
+        LEFT JOIN user tu ON m.to_user_id = tu.user_id
+        WHERE (m.from_user_id = #{user1Id} AND m.to_user_id = #{user2Id})
+           OR (m.from_user_id = #{user2Id} AND m.to_user_id = #{user1Id})
+        ORDER BY m.create_time DESC
+        LIMIT 1
+    </select>
+
+    <!-- 标记消息为已读 -->
+    <update id="markMessagesAsRead">
+        UPDATE message 
+        SET is_read = 1, update_time = NOW()
+        WHERE from_user_id = #{fromUserId} AND to_user_id = #{toUserId} AND is_read = 0
+    </update>
+
+    <!-- 获取未读消息数量 -->
+    <select id="getUnreadCount" resultType="int">
+        SELECT COUNT(*)
+        FROM message
+        WHERE from_user_id = #{fromUserId} AND to_user_id = #{toUserId} AND is_read = 0
+    </select>
+
+    <!-- 根据ID获取消息 -->
+    <select id="getMessageById" resultMap="MessageResultMap">
+        SELECT 
+            m.*,
+            fu.id as fu_id, fu.user_id as fu_user_id, fu.username as fu_username, fu.avatar as fu_avatar,
+            tu.id as tu_id, tu.user_id as tu_user_id, tu.username as tu_username, tu.avatar as tu_avatar,
+            i.id as i_id, i.title as i_title, i.price as i_price, i.images as i_images
+        FROM message m
+        LEFT JOIN user fu ON m.from_user_id = fu.user_id
+        LEFT JOIN user tu ON m.to_user_id = tu.user_id
+        LEFT JOIN item i ON m.item_id = i.id
+        WHERE m.id = #{messageId}
+    </select>
+
+</mapper> 

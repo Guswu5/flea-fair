@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fleafair.Mapper.ChatSessionMapper">
+
+    <resultMap id="ChatSessionResultMap" type="com.fleafair.Entity.ChatSession">
+        <id column="id" property="id"/>
+        <result column="user1_id" property="user1Id"/>
+        <result column="user2_id" property="user2Id"/>
+        <result column="item_id" property="itemId"/>
+        <result column="last_message" property="lastMessage"/>
+        <result column="last_message_time" property="lastMessageTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        
+        <!-- 关联查询 -->
+        <association property="user1" javaType="com.fleafair.Entity.User">
+            <id column="u1_id" property="id"/>
+            <result column="u1_user_id" property="userId"/>
+            <result column="u1_username" property="username"/>
+            <result column="u1_avatar" property="avatar"/>
+        </association>
+        
+        <association property="user2" javaType="com.fleafair.Entity.User">
+            <id column="u2_id" property="id"/>
+            <result column="u2_user_id" property="userId"/>
+            <result column="u2_username" property="username"/>
+            <result column="u2_avatar" property="avatar"/>
+        </association>
+        
+        <association property="item" javaType="com.fleafair.Entity.Item">
+            <id column="i_id" property="id"/>
+            <result column="i_title" property="title"/>
+            <result column="i_price" property="price"/>
+            <result column="i_images" property="images" typeHandler="com.fleafair.Handler.StringListTypeHandler"/>
+        </association>
+    </resultMap>
+
+    <!-- 插入或更新聊天会话 -->
+    <insert id="insertOrUpdateSession" parameterType="com.fleafair.Entity.ChatSession">
+        INSERT INTO chat_session (
+            user1_id, user2_id, item_id, last_message, last_message_time, create_time, update_time
+        ) VALUES (
+            #{user1Id}, #{user2Id}, #{itemId}, #{lastMessage}, #{lastMessageTime}, #{createTime}, #{updateTime}
+        ) ON DUPLICATE KEY UPDATE
+            last_message = #{lastMessage},
+            last_message_time = #{lastMessageTime},
+            update_time = #{updateTime}
+    </insert>
+
+    <!-- 获取用户的所有聊天会话 -->
+    <select id="getSessionsByUserId" resultMap="ChatSessionResultMap">
+        SELECT 
+            cs.*,
+            u1.id as u1_id, u1.user_id as u1_user_id, u1.username as u1_username, u1.avatar as u1_avatar,
+            u2.id as u2_id, u2.user_id as u2_user_id, u2.username as u2_username, u2.avatar as u2_avatar,
+            i.id as i_id, i.title as i_title, i.price as i_price, i.images as i_images,
+            (SELECT COUNT(*) FROM message m 
+             WHERE ((m.from_user_id = u1.user_id AND m.to_user_id = u2.user_id) 
+                    OR (m.from_user_id = u2.user_id AND m.to_user_id = u1.user_id))
+               AND m.is_read = 0 AND m.to_user_id = #{userId}) as unread_count
+        FROM chat_session cs
+        LEFT JOIN user u1 ON cs.user1_id = u1.user_id
+        LEFT JOIN user u2 ON cs.user2_id = u2.user_id
+        LEFT JOIN item i ON cs.item_id = i.id
+        WHERE cs.user1_id = #{userId} OR cs.user2_id = #{userId}
+        ORDER BY cs.last_message_time DESC
+    </select>
+
+    <!-- 获取两个用户之间的会话 -->
+    <select id="getSessionByUsers" resultMap="ChatSessionResultMap">
+        SELECT 
+            cs.*,
+            u1.id as u1_id, u1.user_id as u1_user_id, u1.username as u1_username, u1.avatar as u1_avatar,
+            u2.id as u2_id, u2.user_id as u2_user_id, u2.username as u2_username, u2.avatar as u2_avatar,
+            i.id as i_id, i.title as i_title, i.price as i_price, i.images as i_images
+        FROM chat_session cs
+        LEFT JOIN user u1 ON cs.user1_id = u1.user_id
+        LEFT JOIN user u2 ON cs.user2_id = u2.user_id
+        LEFT JOIN item i ON cs.item_id = i.id
+        WHERE (cs.user1_id = #{user1Id} AND cs.user2_id = #{user2Id})
+           OR (cs.user1_id = #{user2Id} AND cs.user2_id = #{user1Id})
+        LIMIT 1
+    </select>
+
+    <!-- 更新会话的最后消息 -->
+    <update id="updateLastMessage">
+        UPDATE chat_session 
+        SET last_message = #{lastMessage}, update_time = NOW()
+        WHERE (user1_id = #{user1Id} AND user2_id = #{user2Id})
+           OR (user1_id = #{user2Id} AND user2_id = #{user1Id})
+    </update>
+
+    <!-- 删除会话 -->
+    <delete id="deleteSession">
+        DELETE FROM chat_session 
+        WHERE (user1_id = #{user1Id} AND user2_id = #{user2Id})
+           OR (user1_id = #{user2Id} AND user2_id = #{user1Id})
+    </delete>
+
+</mapper> 
